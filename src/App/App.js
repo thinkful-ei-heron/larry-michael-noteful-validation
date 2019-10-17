@@ -53,26 +53,26 @@ class App extends Component {
             body: bodyJson
         }).then(response => response.ok ? response.json() : Promise.reject(response))
         .then(responseJson => {
-            let folders = this.state.folders
-            folders.push({name: responseJson.name, id: responseJson.id})
+            let folders = [...this.state.folders, {name: responseJson.name, id: responseJson.id}]
             this.setState({folders})
         })
         .catch(e => console.error(e))
     };
+    
     handleAddNote = (name, content, folderId) => {
         //name, modified, folderId, content
         let modified = new Date(Date.now())
         modified = modified.toISOString()
         let bodyJson = JSON.stringify({name, content, folderId, modified})
-        fetch(`${config.API_ENDPINT}/notes`, {
+        fetch(`${config.API_ENDPOINT}/notes`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: bodyJson
         }).then(response => response.ok ? response.json() : Promise.reject(response))
         .then(responseJson => {
-            let notes = this.state.notes
-            notes.push({id: responseJson.id, name: responseJson.name, modified: responseJson.modified, content: responseJson.content})
-            this.setState({notes})
+            let notesCopy = [...this.state.notes, {id: responseJson.id, folderId: responseJson.folderId, name: responseJson.name, modified: responseJson.modified, content: responseJson.content}]
+            console.log(notesCopy);
+            this.setState({notes: notesCopy})
         })
         .catch(e => console.error(e))
 
@@ -112,6 +112,7 @@ class App extends Component {
                 ))}
                 <Route path="/note/:noteId" component={NotePageMain} />
                 <Route path="/add-folder" component={AddFolder} />
+                <Route path="/add-note" component={AddNote} />
             </>
         );
     }
