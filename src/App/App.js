@@ -9,6 +9,7 @@ import ApiContext from '../ApiContext';
 
 import AddFolder from '../AddFolder/AddFolder'
 import AddNote from '../AddNote/AddNote'
+import ErrorBoundary from '../ErrorBoundary/ErrorBoundary'
 import config from '../config';
 import './App.css';
 
@@ -71,7 +72,6 @@ class App extends Component {
         }).then(response => response.ok ? response.json() : Promise.reject(response))
         .then(responseJson => {
             let notesCopy = [...this.state.notes, {id: responseJson.id, folderId: responseJson.folderId, name: responseJson.name, modified: responseJson.modified, content: responseJson.content}]
-            console.log(notesCopy);
             this.setState({notes: notesCopy})
         })
         .catch(e => console.error(e))
@@ -128,14 +128,18 @@ class App extends Component {
         return (
             <ApiContext.Provider value={value}>
                 <div className="App">
-                    <nav className="App__nav">{this.renderNavRoutes()}</nav>
+                    <nav className="App__nav">
+                        <ErrorBoundary>{this.renderNavRoutes()}</ErrorBoundary>
+                    </nav>
                     <header className="App__header">
                         <h1>
                             <Link to="/">Noteful</Link>{' '}
                             <FontAwesomeIcon icon="check-double" />
                         </h1>
                     </header>
-                    <main className="App__main">{this.renderMainRoutes()}</main>
+                    <main className="App__main">
+                        <ErrorBoundary>{this.renderMainRoutes()}</ErrorBoundary>
+                    </main>
                 </div>
             </ApiContext.Provider>
         );
