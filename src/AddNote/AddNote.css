@@ -1,4 +1,4 @@
-.new-folder {
+.new-note {
   color: #bdbdbd;
   font-family: var(--custom-font);
   padding-left: 16px;
@@ -10,6 +10,6 @@
   padding-top: 20px;
 }
 
-.new-folder-button {
+.new-note-button {
   margin-left: 20px;
 }

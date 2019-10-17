@@ -8,6 +8,7 @@ import NotePageMain from '../NotePageMain/NotePageMain';
 import ApiContext from '../ApiContext';
 
 import AddFolder from '../AddFolder/AddFolder'
+import AddNote from '../AddNote/AddNote'
 import config from '../config';
 import './App.css';
 
@@ -45,8 +46,39 @@ class App extends Component {
     };
 
     handleAddFolder = folderName => {
-
+        let bodyJson = JSON.stringify({"name": folderName})
+        fetch(`${config.API_ENDPOINT}/folders`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: bodyJson
+        }).then(response => response.ok ? response.json() : Promise.reject(response))
+        .then(responseJson => {
+            let folders = this.state.folders
+            folders.push({name: responseJson.name, id: responseJson.id})
+            this.setState({folders})
+        })
+        .catch(e => console.error(e))
     };
+    handleAddNote = (name, content, folderId) => {
+        //name, modified, folderId, content
+        let modified = new Date(Date.now())
+        modified = modified.toISOString()
+        let bodyJson = JSON.stringify({name, content, folderId, modified})
+        fetch(`${config.API_ENDPINT}/notes`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: bodyJson
+        }).then(response => response.ok ? response.json() : Promise.reject(response))
+        .then(responseJson => {
+            let notes = this.state.notes
+            notes.push({id: responseJson.id, name: responseJson.name, modified: responseJson.modified, content: responseJson.content})
+            this.setState({notes})
+        })
+        .catch(e => console.error(e))
+
+    }
+
+    
 
     renderNavRoutes() {
         return (
@@ -67,6 +99,7 @@ class App extends Component {
     }
 
     renderMainRoutes() {
+        console.log(this.state)
         return (
             <>
                 {['/', '/folder/:folderId'].map(path => (
@@ -88,7 +121,8 @@ class App extends Component {
             notes: this.state.notes,
             folders: this.state.folders,
             deleteNote: this.handleDeleteNote,
-            addFolder: this.handleAddFolder
+            addFolder: this.handleAddFolder,
+            addNote: this.handleAddNote
         };
         return (
             <ApiContext.Provider value={value}>
