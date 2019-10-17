@@ -37,7 +37,6 @@ export default class NoteListNav extends React.Component {
           >
             <FontAwesomeIcon icon='plus' />
             <br />
-            Folder
           </CircleButton>
         </div>
       </div>
