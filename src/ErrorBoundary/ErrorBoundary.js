@@ -1,4 +1,6 @@
-import React from 'react'
+import React from 'react';
+
+import './ErrorBoundary.css';
 
 export default class ErrorBoundary extends React.Component {
   
@@ -8,14 +10,15 @@ export default class ErrorBoundary extends React.Component {
       hasError: false
     };
   }
+
   static getDerivedStateFromError(error) {
     return { hasError: true };
   }
+
   render() {
     if(this.state.hasError){
-      return <h2>:(</h2>
+      return <h2 className="errorBoun">Error Received During Render</h2>
     }
     return this.props.children;
   }
-
 }
