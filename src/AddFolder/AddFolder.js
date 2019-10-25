@@ -1,33 +1,65 @@
 import React from 'react'
 import ApiContext from '../ApiContext'
 
+import ValidationError from '../ValidationError/ValidationError';
+
 import './AddFolder.css'
 
 export default class AddFolder extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      folderName: {
+        value: '',
+        touched: false
+      }
+    }
+  }
   static contextType = ApiContext
 
+  updateFolderName (name) {
+    this.setState({folderName: {value: name, touched: true}});
+  }
 
- render () {
+  validateFolderName(fieldValue) {
+    const name = this.state.folderName.value.trim();
+    if (name.length === 0) {
+      return 'Name is required';
+    } else if (name.length < 3) {
+      return 'Name must be at least 3 characters long';
+    }
+  }
 
-   return (
-     <form className="new-folder">
-       <h2>Add Folder</h2>
-       <div className="form-group">
-         <label htmlFor="name">Folder Name: </label>
-         <input type="text" className="newFolder__control"
-           name="name" id="new-folder-name"/>
-       </div>
-       <div className="registration__button__group">
-        <button type="button" className="new-folder-button" onClick={this.props.history.goBack}>
+  render() {
+    return (
+      <form className="new-folder" 
+            onSubmit={event => this.context.addFolder(event, this.state.folderName.value)}>
+        <h2>Add Folder</h2>
+        <div className="form-group">
+          <label htmlFor="name">Folder Name: </label>
+          <input type="text" 
+                 className="newFolder__control"
+                 name="name" 
+                 id="new-folder-name"
+                 defaultValue="Form Name"
+                 onChange={event => this.updateFolderName(event.target.value)} />
+          {this.state.folderName.touched  && (
+            <ValidationError message={this.validateFolderName()}/>
+          )}
+        </div>
+        <div className="registration__button__group">
+          <button type="button" 
+                  className="new-folder-button" 
+                  onClick={this.props.history.goBack}>
             Cancel
-        </button>
-        <button type="button" className="new-folder-button" onClick={() => {
-          this.context.addFolder(document.getElementById('new-folder-name').value)} 
-          }>
+          </button>
+          <button type="submit" 
+                  className="new-folder-button"
+                  disabled={this.validateFolderName()}>
             Save
-        </button>
-       </div>
-     </form>
-   )
+          </button>
+        </div>
+      </form>
+    )
   }
 }

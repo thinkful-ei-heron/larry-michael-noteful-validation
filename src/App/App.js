@@ -46,8 +46,9 @@ class App extends Component {
     });
   };
 
-  handleAddFolder = folderName => {
-    let bodyJson = JSON.stringify({ "name": folderName })
+  handleAddFolder = (event, name) => {
+    event.preventDefault();
+    let bodyJson = JSON.stringify({ "name": name })
     fetch(`${config.API_ENDPOINT}/folders`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -96,7 +97,6 @@ class App extends Component {
   }
 
   renderMainRoutes() {
-    console.log(this.state)
     return (
       <>
         {['/', '/folder/:folderId'].map(path => (
