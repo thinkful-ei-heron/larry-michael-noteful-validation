@@ -1,7 +1,4 @@
 import React from 'react'
-import ApiContext from '../ApiContext'
-
-
 
 export default class ErrorBoundary extends React.Component {
   

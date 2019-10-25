@@ -21,7 +21,7 @@ export default class AddFolder extends React.Component {
         <button type="button" className="new-folder-button" onClick={this.props.history.goBack}>
             Cancel
         </button>
-        <button type="button" className="new-folder-button" onClick={() =>{
+        <button type="button" className="new-folder-button" onClick={() => {
           this.context.addFolder(document.getElementById('new-folder-name').value)} 
           }>
             Save
