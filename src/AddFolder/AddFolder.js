@@ -1,5 +1,6 @@
 import React from 'react'
 import ApiContext from '../ApiContext'
+import PropTypes from 'prop-types';
 
 import ValidationError from '../ValidationError/ValidationError';
 
@@ -33,7 +34,10 @@ export default class AddFolder extends React.Component {
   render() {
     return (
       <form className="new-folder" 
-            onSubmit={event => this.context.addFolder(event, this.state.folderName.value)}>
+            onSubmit={event => {
+              this.context.addFolder(event, this.state.folderName.value)
+              }
+            }>
         <h2>Add Folder</h2>
         <div className="form-group">
           <label htmlFor="name">Folder Name: </label>
@@ -41,7 +45,7 @@ export default class AddFolder extends React.Component {
                  className="newFolder__control"
                  name="name" 
                  id="new-folder-name"
-                 defaultValue="Form Name"
+                 placeholder="Form Name"
                  onChange={event => this.updateFolderName(event.target.value)} />
           {this.state.folderName.touched  && (
             <ValidationError message={this.validateFolderName()}/>
@@ -63,3 +67,7 @@ export default class AddFolder extends React.Component {
     )
   }
 }
+
+AddFolder.propTypes = {
+  history: PropTypes.object.isRequired
+};

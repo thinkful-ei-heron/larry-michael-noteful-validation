@@ -1,5 +1,6 @@
 import React from 'react'
 import ApiContext from '../ApiContext'
+import PropTypes from 'prop-types';
 
 import ValidationError from '../ValidationError/ValidationError';
 
@@ -35,7 +36,6 @@ export default class AddNote extends React.Component {
   }
 
   updateFolder (folderId) {
-    console.log(`Folder is ${folderId}`);
     this.setState({folder: {value: folderId, touched: true}});
   }
 
@@ -55,7 +55,6 @@ export default class AddNote extends React.Component {
               let folderValue;
               if (this.state.folder.value) folderValue = this.state.folder.value;
               else folderValue = this.context.folders[0].id;
-              console.log(folderValue);
               this.context.addNote(
                       event, 
                       this.state.noteName.value,
@@ -69,7 +68,7 @@ export default class AddNote extends React.Component {
                  className="newFolder__control"
                  name="name" 
                  id="new-note-name"
-                 defaultValue="Note Name"
+                 placeholder="Note Name"
                  onChange={event => this.updateNoteName(event.target.value)} />
           {this.state.noteName.touched  && (
             <ValidationError message={this.validateNoteName()}/>
@@ -105,3 +104,7 @@ export default class AddNote extends React.Component {
     )
   }
 }
+
+AddNote.propTypes = {
+  history: PropTypes.object.isRequired
+};
