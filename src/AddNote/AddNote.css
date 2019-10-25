@@ -6,6 +6,16 @@
   text-shadow: 2px 1px 2px black;
 }
 
+.form-group {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+}
+
+.form-group select {
+  width: 100px;
+}
+
 .registration__button__group {
   padding-top: 20px;
 }

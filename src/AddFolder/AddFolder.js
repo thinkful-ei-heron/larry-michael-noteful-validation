@@ -21,7 +21,7 @@ export default class AddFolder extends React.Component {
     this.setState({folderName: {value: name, touched: true}});
   }
 
-  validateFolderName(fieldValue) {
+  validateFolderName() {
     const name = this.state.folderName.value.trim();
     if (name.length === 0) {
       return 'Name is required';

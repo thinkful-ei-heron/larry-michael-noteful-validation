@@ -61,7 +61,8 @@ class App extends Component {
       .catch(e => console.error(e))
   };
 
-  handleAddNote = (name, content, folderId) => {
+  handleAddNote = (event, name, content, folderId) => {
+    event.preventDefault();
     //name, modified, folderId, content
     let modified = new Date(Date.now())
     modified = modified.toISOString()

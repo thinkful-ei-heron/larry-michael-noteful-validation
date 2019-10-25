@@ -1,42 +1,105 @@
 import React from 'react'
 import ApiContext from '../ApiContext'
 
+import ValidationError from '../ValidationError/ValidationError';
+
 import './AddNote.css'
 
 export default class AddNote extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      noteName: {
+        value: '',
+        touched: false
+      },
+      content: {
+        value: '',
+        touched: false
+      },
+      folder: {
+        value: '',
+        touched: false
+      }
+    }
+  }  
+
   static contextType = ApiContext
 
+  updateNoteName (name) {
+    this.setState({noteName: {value: name, touched: true}});
+  }
+
+  updateContent (content) {
+    this.setState({content: {value: content, touched: true}});
+  }
+
+  updateFolder (folderId) {
+    console.log(`Folder is ${folderId}`);
+    this.setState({folder: {value: folderId, touched: true}});
+  }
+
+  validateNoteName() {
+    const name = this.state.noteName.value.trim();
+    if (name.length === 0) {
+      return 'Name is required';
+    } else if (name.length < 3) {
+      return 'Name must be at least 3 characters long';
+    }
+  }
 
   render() {
-
     return (
-      <form className="new-note">
+      <form className="new-note"
+            onSubmit={event => {
+              let folderValue;
+              if (this.state.folder.value) folderValue = this.state.folder.value;
+              else folderValue = this.context.folders[0].id;
+              console.log(folderValue);
+              this.context.addNote(
+                      event, 
+                      this.state.noteName.value,
+                      this.state.content.value,
+                      folderValue)}
+            }>
         <h2>AddNote</h2>
         <div className="form-group">
           <label htmlFor="name">Note Name: </label>
-          <input type="text" className="newFolder__control"
-            name="name" id="new-note-name" />
-          <select id="new-note-folder">
+          <input type="text" 
+                 className="newFolder__control"
+                 name="name" 
+                 id="new-note-name"
+                 defaultValue="Note Name"
+                 onChange={event => this.updateNoteName(event.target.value)} />
+          {this.state.noteName.touched  && (
+            <ValidationError message={this.validateNoteName()}/>
+          )}
+          <label htmlFor="folder">Folder: </label>
+          <select id="new-note-folder"
+                  name="folder"
+                  onChange={event => this.updateFolder(event.target.value)} >
             {this.context.folders.map(folder => {
               return <option key={folder.id} value={folder.id}>{folder.name}</option>
             })}
           </select>
           <label htmlFor="content">Note Content: </label>
-          <textarea id="new-note-content" name="content" rows="5" cols="30"></textarea>
+          <textarea id="new-note-content" 
+                    name="content" 
+                    rows="5" 
+                    cols="30"
+                    onChange={event => this.updateContent(event.target.value)} >
+          </textarea>
         </div>
         <div className="registration__button__group">
-          <button type="button" className="new-note-button" onClick={this.props.history.goBack}>
+          <button type="button" 
+                  className="new-note-button" 
+                  onClick={this.props.history.goBack}>
             Cancel
-        </button>
-          <button type="button" className="new-note-button" onClick={() => {
-            this.context.addNote(document.getElementById('new-note-name').value,
-              document.getElementById('new-note-content').value,
-              document.getElementById('new-note-folder').value)
-            this.props.history.push('/')
-          }
-          }>
+          </button>
+          <button type="submit" 
+                  className="new-note-button">
             Save
-        </button>
+          </button> 
         </div>
       </form>
     )
