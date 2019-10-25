@@ -1,4 +1,5 @@
 import React from 'react'
+import { Redirect } from 'react-router-dom'
 import ApiContext from '../ApiContext'
 import PropTypes from 'prop-types';
 
@@ -13,7 +14,8 @@ export default class AddFolder extends React.Component {
       folderName: {
         value: '',
         touched: false
-      }
+      },
+      redirectToReferrer: false
     }
   }
   static contextType = ApiContext
@@ -32,9 +34,13 @@ export default class AddFolder extends React.Component {
   }
 
   render() {
-    return (
+    if (this.state.redirectToReferrer) {
+      return (<Redirect to='/' />)
+    }
+    else return (
       <form className="new-folder" 
             onSubmit={event => {
+              this.setState({ redirectToReferrer: true });
               this.context.addFolder(event, this.state.folderName.value)
               }
             }>
@@ -45,7 +51,7 @@ export default class AddFolder extends React.Component {
                  className="newFolder__control"
                  name="name" 
                  id="new-folder-name"
-                 placeholder="Form Name"
+                 placeholder="Folder Name"
                  onChange={event => this.updateFolderName(event.target.value)} />
           {this.state.folderName.touched  && (
             <ValidationError message={this.validateFolderName()}/>

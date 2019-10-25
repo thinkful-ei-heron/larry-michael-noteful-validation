@@ -1,4 +1,5 @@
 import React from 'react'
+import { Redirect } from 'react-router-dom'
 import ApiContext from '../ApiContext'
 import PropTypes from 'prop-types';
 
@@ -21,7 +22,8 @@ export default class AddNote extends React.Component {
       folder: {
         value: '',
         touched: false
-      }
+      },
+      redirectToReferrer: false      
     }
   }  
 
@@ -49,12 +51,16 @@ export default class AddNote extends React.Component {
   }
 
   render() {
-    return (
+    if (this.state.redirectToReferrer) {
+      return (<Redirect to='/' />)
+    }
+    else return (
       <form className="new-note"
             onSubmit={event => {
               let folderValue;
               if (this.state.folder.value) folderValue = this.state.folder.value;
               else folderValue = this.context.folders[0].id;
+              this.setState({ redirectToReferrer: true });
               this.context.addNote(
                       event, 
                       this.state.noteName.value,

@@ -57,6 +57,7 @@ class App extends Component {
       .then(responseJson => {
         let folders = [...this.state.folders, { name: responseJson.name, id: responseJson.id }]
         this.setState({ folders })
+        console.log(this.state.folders);
       })
       .catch(e => console.error(e))
   };
