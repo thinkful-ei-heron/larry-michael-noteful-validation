@@ -70,9 +70,6 @@ export default class AddNote extends React.Component {
   }  
 
   render() {
-    console.log(`Folder value is ${this.state.folder.value}`);    
-    console.log(`context Folder value is ${this.context.folders[0].id}`);
-    
     if (this.state.redirectToReferrer) {
       return (<Redirect to='/' />)
     }
