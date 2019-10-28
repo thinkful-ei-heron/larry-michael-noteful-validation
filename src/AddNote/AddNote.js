@@ -27,18 +27,23 @@ export default class AddNote extends React.Component {
     }
   }  
 
-  static contextType = ApiContext
+  static contextType = ApiContext;
+
+  componentDidMount() {
+    const folderId = this.context.folders[0].id;
+    this.setState({folder: {value: folderId}});
+  }
 
   updateNoteName (name) {
     this.setState({noteName: {value: name, touched: true}});
   }
 
-  updateContent (content) {
-    this.setState({content: {value: content, touched: true}});
-  }
-
   updateFolder (folderId) {
     this.setState({folder: {value: folderId, touched: true}});
+  }
+
+  updateContent (content) {
+    this.setState({content: {value: content, touched: true}});
   }
 
   validateNoteName() {
@@ -50,22 +55,36 @@ export default class AddNote extends React.Component {
     }
   }
 
+  validateFolderName() {
+    const name = this.state.folder.value.trim();
+    if (name.length === 0) {
+      return 'Folder is required';
+    }
+  }
+
+  validateContent() {
+    const content = this.state.content.value.trim();
+    if (content.length === 0) {
+      return 'Note Content is Required';
+    }
+  }  
+
   render() {
+    console.log(`Folder value is ${this.state.folder.value}`);    
+    console.log(`context Folder value is ${this.context.folders[0].id}`);
+    
     if (this.state.redirectToReferrer) {
       return (<Redirect to='/' />)
     }
     else return (
       <form className="new-note"
             onSubmit={event => {
-              let folderValue;
-              if (this.state.folder.value) folderValue = this.state.folder.value;
-              else folderValue = this.context.folders[0].id;
               this.setState({ redirectToReferrer: true });
               this.context.addNote(
                       event, 
                       this.state.noteName.value,
                       this.state.content.value,
-                      folderValue)}
+                      this.state.folder.value)}
             }>
         <h2>AddNote</h2>
         <div className="form-group">
@@ -87,13 +106,20 @@ export default class AddNote extends React.Component {
               return <option key={folder.id} value={folder.id}>{folder.name}</option>
             })}
           </select>
+          {this.state.folder.touched  && (
+            <ValidationError message={this.validateFolderName()}/>
+          )}
           <label htmlFor="content">Note Content: </label>
           <textarea id="new-note-content" 
                     name="content" 
                     rows="5" 
                     cols="30"
                     onChange={event => this.updateContent(event.target.value)} >
+
           </textarea>
+          {this.state.content.touched  && (
+            <ValidationError message={this.validateContent()}/>
+          )}                    
         </div>
         <div className="registration__button__group">
           <button type="button" 
@@ -102,7 +128,10 @@ export default class AddNote extends React.Component {
             Cancel
           </button>
           <button type="submit" 
-                  className="new-note-button">
+                  className="new-note-button"
+                  disabled={this.validateNoteName()
+                           || this.validateFolderName()
+                           || this.validateContent()}>
             Save
           </button> 
         </div>
